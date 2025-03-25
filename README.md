@@ -1,5 +1,7 @@
 # tiktok-automation
 
+CONFIGURATION FOR CREATE PROJECT DIRECTORY + GITHUB CI/CD
+
 🧱 STEP 1: Set Up the Project Structure
 bash
 Copiar
@@ -122,3 +124,45 @@ Editar
 git add .github/workflows/main.yml
 git commit -m "Add GitHub Actions pipeline"
 git push
+
+
+
+codes
+python ./scripts/download_video.py
+
+https://www.tiktok.com/@anitta/video/7469556423991561478
+https://www.tiktok.com/@anitta/video/7481739673937710391
+https://www.tiktok.com/@anitta/video/7481436341419494711
+https://www.tiktok.com/@anitta/video/7473131029063028023
+https://www.tiktok.com/@anitta/video/7461030892694195462
+https://www.tiktok.com/@anitta/video/7468462221845155077
+https://www.tiktok.com/@anitta/video/7479193490572709125
+https://www.tiktok.com/@anitta/video/7466940299655367942
+https://www.tiktok.com/@anitta/video/7468693887406607621
+https://www.tiktok.com/@anitta/video/7473886446093487366
+https://www.tiktok.com/@anitta/video/7480577356000726327
+https://www.tiktok.com/@anitta/video/7466586721719733510
+https://www.tiktok.com/@anitta/video/7469222285862325559
+https://www.tiktok.com/@anitta/video/7464366079406656774
+https://www.tiktok.com/@anitta/video/7469228896479612165
+https://www.tiktok.com/@anitta/video/7068312859222052101
+https://www.tiktok.com/@anitta/video/7481448823936519429
+https://www.tiktok.com/@anitta/video/7466431293551561990
+https://www.tiktok.com/@anitta/video/7478026846240607543
+https://www.tiktok.com/@anitta/video/7481033502855531782
+https://www.tiktok.com/@anitta/video/7461998573312363782
+https://www.tiktok.com/@anitta/video/7458858557908339974
+https://www.tiktok.com/@anitta/video/7479569363813616951
+https://www.tiktok.com/@anitta/video/7471012447156030726
+https://www.tiktok.com/@anitta/video/7477566784640437509
+https://www.tiktok.com/@anitta/video/7471793440737774903
+https://www.tiktok.com/@anitta/video/7464744792858152197
+https://www.tiktok.com/@anitta/video/7465008143559298309
+https://www.tiktok.com/@anitta/video/7469586834285137158
+https://www.tiktok.com/@anitta/video/7462397708456725765
+https://www.tiktok.com/@anitta/video/7474643421475491127
+https://www.tiktok.com/@anitta/video/7478818921022377221
+https://www.tiktok.com/@anitta/video/7467670264965254406
+https://www.tiktok.com/@anitta/video/7466182708717276421
+https://www.tiktok.com/@anitta/video/7461783860594969861
+https://www.tiktok.com/@anitta/video/7476086305257016631
