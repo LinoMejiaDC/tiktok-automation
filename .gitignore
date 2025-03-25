@@ -1,4 +1,22 @@
+# Ignore Python virtual environment
 venv/
+
+# Ignore Python bytecode/cache
 __pycache__/
+*.pyc
+
+# Ignore logs
 *.log
+
+# Ignore environment variables
 .env
+
+# Ignore the entire data folder except for .gitkeep
+data/*
+!data/.gitkeep
+
+# Ignore the entire utils folder
+utils/
+
+# Ignore VSCode config (optional)
+.vscode/
