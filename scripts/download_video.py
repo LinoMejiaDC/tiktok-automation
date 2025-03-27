@@ -77,7 +77,7 @@ import time
 import os
 
 # Scraping Browser credentials
-SBR_WEBDRIVER = f'https://brd-customer-hl_a6de26b2-zone-scraping_browser1:dvvofz2u5jjd@brd.superproxy.io:9515'
+SBR_WEBDRIVER = f'https://brd-customer-hl_55aa07be-zone-scraping_browser1:ymgi0mznl046@brd.superproxy.io:9515'
 
 OUTPUT_DIR = "utils"
 
