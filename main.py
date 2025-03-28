@@ -1,9 +1,10 @@
 
-from scripts.download_video import get_video_urls
+from scripts.download_video import build_username_data
 
+# Run test
 if __name__ == "__main__":
-    username_url = "https://www.tiktok.com/@anitta"  # You can change the username here
-    urls = get_video_urls(username_url)
-    print("Video URLs:")
-    for url in urls:
-        print(url)
+    username_url = "https://www.tiktok.com/@anitta"
+    data = build_username_data(username_url)
+    print("\nFinal Data:\n")
+    from pprint import pprint
+    pprint(data)
