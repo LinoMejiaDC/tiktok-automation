@@ -9,6 +9,7 @@ import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from scripts.download_video import download_tiktok_video
 
 
 # Scraping Browser credentials
@@ -125,7 +126,7 @@ def get_video_urls(username_url):
 
     return list_urls, username
 
-def build_username_data(username_url, max_videos=2, sleep_between=10):
+def build_username_data(username_url, max_videos=1, sleep_between=10):
 
     global timestamp
 
@@ -157,6 +158,12 @@ def build_username_data(username_url, max_videos=2, sleep_between=10):
 
     
     save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt")
+
+    #download video
+    output_dir="/home/linoccm/08-tiktok-automation/data/raw"
+    for video_url in video_urls:
+        download_tiktok_video(video_url, output_dir)
+
 
     return username_data
 

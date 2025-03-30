@@ -1,5 +1,5 @@
 
-from scripts.download_video import build_username_data
+from scripts.download_data import build_username_data
 
 # Run test
 if __name__ == "__main__":
