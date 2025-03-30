@@ -20,3 +20,6 @@ utils/
 
 # Ignore VSCode config (optional)
 .vscode/
+
+#env variable
+.env

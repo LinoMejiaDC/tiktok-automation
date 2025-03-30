@@ -10,22 +10,36 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from scripts.download_video import download_tiktok_video
+from dotenv import load_dotenv
 
+load_dotenv()
+SBR_WEBDRIVER = os.getenv("SBR_WEBDRIVER")
 
-# Scraping Browser credentials
-SBR_WEBDRIVER = f'https://brd-customer-hl_55aa07be-zone-scraping_browser1:ymgi0mznl046@brd.superproxy.io:9515'
-
-OUTPUT_DIR = "utils"
+#OUTPUT_DIR = "utils"
 
 timestamp = datetime.now().strftime("%Y%m%d%H%M")
 
+base_dir = "/home/linoccm/08-tiktok-automation"
 
-def save_to_file(content, filename):
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-    path = os.path.join(OUTPUT_DIR, filename)
-    with open(path, "w", encoding="utf-8") as f:
+def save_to_file(content, filename, base_dir, relative_path= "data/raw"):
+    """
+    Save content to a file inside base_dir / relative_path / filename.
+    
+    Args:
+        content (str): The content to write.
+        filename (str): Name of the file (e.g. "output.txt").
+        base_dir (str): The root path (e.g. "/home/linoccm/08-tiktok-automation").
+        relative_path (str): Subfolder path (e.g. "/data/raw").
+    """
+    full_dir = os.path.join(base_dir, relative_path)
+    os.makedirs(full_dir, exist_ok=True)
+
+    full_path = os.path.join(full_dir, filename)
+    with open(full_path, "w", encoding="utf-8") as f:
         f.write(content)
+
+    print(f"✅ File saved to: {full_path}")
+
 
 def scrape_website(website):
     print(f"Connecting to Scraping Browser for: {website}")
@@ -65,7 +79,8 @@ def extract_video_data(driver, video_url):
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
     # Debug: save HTML snapshot
-    save_to_file(driver.page_source, f"debug_{timestamp}.html")
+    #save_to_file(driver.page_source, f"debug_{timestamp}.html")
+    save_to_file(driver.page_source, f"debug_{timestamp}.html", base_dir, relative_path= "data/logs")
 
     # Description
     img_tag = soup.find("img", alt=True)
@@ -120,9 +135,12 @@ def get_video_urls(username_url):
     
     list_urls = list(set(video_urls))
     #save
-    save_to_file(html, f"{username}_html_{timestamp}.txt")
-    save_to_file(str(soup), f"{username}_soup_{timestamp}.txt")
-    save_to_file(str(list_urls), f"{username}_list_urls_{timestamp}.txt")
+    # save_to_file(html, f"{username}_html_{timestamp}.txt")
+    # save_to_file(str(soup), f"{username}_soup_{timestamp}.txt")
+    # save_to_file(str(list_urls), f"{username}_list_urls_{timestamp}.txt")
+    save_to_file(html, f"{username}_html_{timestamp}.txt", base_dir, relative_path= "data/text")
+    save_to_file(str(soup), f"{username}_soup_{timestamp}.txt", base_dir, relative_path= "data/text")
+    save_to_file(str(list_urls), f"{username}_list_urls_{timestamp}.txt", base_dir, relative_path= "data/text")
 
     return list_urls, username
 
@@ -155,15 +173,16 @@ def build_username_data(username_url, max_videos=1, sleep_between=10):
     username_data = {
         username_url: user_data
     }
-
     
-    save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt")
+    #save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt")
+    save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt", base_dir, relative_path= "data/text")
+
 
     #download video
-    output_dir="/home/linoccm/08-tiktok-automation/data/raw"
+    output_dir = os.path.join(base_dir, "data", "videos")
+
     for video_url in video_urls:
         download_tiktok_video(video_url, output_dir)
-
 
     return username_data
 
