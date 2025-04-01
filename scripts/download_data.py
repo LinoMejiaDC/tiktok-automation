@@ -17,7 +17,7 @@ SBR_WEBDRIVER = os.getenv("SBR_WEBDRIVER")
 
 #OUTPUT_DIR = "utils"
 
-timestamp = datetime.now().strftime("%Y%m%d%H%M")
+#timestamp = datetime.now().strftime("%Y%m%d%H%M")
 
 base_dir = "/home/linoccm/08-tiktok-automation"
 
@@ -60,9 +60,9 @@ def scrape_website(website):
         html = driver.page_source
         return html
 
-def extract_video_data(driver, video_url):
+def extract_video_data(driver, video_url, timestamp):
     print(f"Scraping video page: {video_url}")
-    global timestamp 
+    #global timestamp 
     driver.get(video_url)
 
     try:
@@ -117,13 +117,13 @@ def extract_video_data(driver, video_url):
         "comments": comments
     }
 
-def get_video_urls(username_url):
+def get_video_urls(username_url, timestamp):
     html = scrape_website(username_url)
     soup = BeautifulSoup(html, "html.parser")
 
     # parsed soup
     username = username_url.rstrip('/').split('@')[-1]
-    global timestamp 
+    #global timestamp 
 
     video_tags = soup.find_all("a", href=True)
     video_urls = []
@@ -140,16 +140,17 @@ def get_video_urls(username_url):
     # save_to_file(str(list_urls), f"{username}_list_urls_{timestamp}.txt")
     save_to_file(html, f"{username}_html_{timestamp}.txt", base_dir, relative_path= "data/text")
     save_to_file(str(soup), f"{username}_soup_{timestamp}.txt", base_dir, relative_path= "data/text")
-    save_to_file(str(list_urls), f"{username}_list_urls_{timestamp}.txt", base_dir, relative_path= "data/text")
+    save_to_file(str(list_urls), f"{username}_urls_{timestamp}.txt", base_dir, relative_path= "data/text")
 
     return list_urls, username
 
-def build_username_data(username_url, max_videos=1, sleep_between=10):
+def build_username_data(username_url, timestamp):
+    sleep_between=10
 
-    global timestamp
+    #global timestamp
 
-    video_urls, username = get_video_urls(username_url)
-    video_urls = video_urls[:max_videos]  # Limit for testing
+    video_urls, username = get_video_urls(username_url,timestamp)
+    #video_urls = video_urls[:max_videos]  # Limit for testing
 
     print("Starting full video scraping...")
 
@@ -161,7 +162,7 @@ def build_username_data(username_url, max_videos=1, sleep_between=10):
                 # Create a new browser session for each video
                 sbr_connection = ChromiumRemoteConnection(SBR_WEBDRIVER, "goog", "chrome")
                 with Remote(sbr_connection, options=ChromeOptions()) as driver:
-                    video_data = extract_video_data(driver, video_url)
+                    video_data = extract_video_data(driver, video_url,timestamp)
                     user_data[video_url] = video_data
                 break  # Exit retry loop on success
             except Exception as e:
@@ -175,14 +176,8 @@ def build_username_data(username_url, max_videos=1, sleep_between=10):
     }
     
     #save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt")
-    save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt", base_dir, relative_path= "data/text")
 
-
-    #download video
-    output_dir = os.path.join(base_dir, "data", "videos")
-
-    for video_url in video_urls:
-        download_tiktok_video(video_url, output_dir)
+    save_to_file(str(username_data), f"{username}_{timestamp}.txt", base_dir, relative_path= "data/text")
 
     return username_data
 

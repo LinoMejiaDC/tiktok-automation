@@ -15,7 +15,7 @@ def download_tiktok_video(video_url, output_dir):
         'outtmpl': f'{output_dir}/{user_url}.%(ext)s',
         'format': 'mp4',
         'cookiesfrombrowser': None,
-        'cookiefile': '/home/linoccm/07_WebScrapping/AI-Web-Scraper/cookies.txt'
+        'cookiefile': '/home/linoccm/08-tiktok-automation/utils/cookies_cafe.txt'
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([video_url])
