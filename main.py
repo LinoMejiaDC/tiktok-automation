@@ -13,7 +13,9 @@ if __name__ == "__main__":
 
     # 1- Scrapping data 
     #username_url = "https://www.tiktok.com/@choquei"
-    username_url = "https://www.tiktok.com/@sbt"  
+    #username_url = "https://www.tiktok.com/@sbt"  
+    username_url = "https://www.tiktok.com/@jovempannews"  
+
     username = username_url.rstrip('/').split('@')[-1]
     timestamp = datetime.now().strftime("%Y%m%d%H")
 
@@ -23,25 +25,25 @@ if __name__ == "__main__":
     pprint(data)
 
     # 2 dowload video
-    num_videos = 2    
+    # num_videos = 2    
 
-    try:
-        path_urls = base_dir + f"/data/text/{username}_list_urls_{timestamp}.txt"
+    # try:
+    #     path_urls = base_dir + f"/data/text/{username}_list_urls_{timestamp}.txt"
 
-        with open(path_urls, "r", encoding="utf-8") as file:
-            video_urls = file.read()
-            print(video_urls)
-    except FileNotFoundError:
-        print(f"The file at {path_urls} was not found.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    #     with open(path_urls, "r", encoding="utf-8") as file:
+    #         video_urls = file.read()
+    #         print(video_urls)
+    # except FileNotFoundError:
+    #     print(f"The file at {path_urls} was not found.")
+    # except Exception as e:
+    #     print(f"An error occurred: {e}")
 
-    video_urls = video_urls[:num_videos]
+    # video_urls = video_urls[:num_videos]
 
-    for video_url in video_urls:
+    # for video_url in video_urls:
 
-        path_save_videos = base_dir + f"/videos/"
-        download_tiktok_video(video_url, path_save_videos)
+    #     path_save_videos = base_dir + f"/videos/"
+    #     download_tiktok_video(video_url, path_save_videos)
 
 
     #2 - create content
