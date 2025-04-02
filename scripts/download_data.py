@@ -45,70 +45,6 @@ def save_to_file(content, filename, base_dir, relative_path= "data/raw"):
     print(f"✅ File saved to: {full_path}")
 
 
-# def scrape_website(website):
-#     print(f"Connecting to Scraping Browser for: {website}")
-#     sbr_connection = ChromiumRemoteConnection(SBR_WEBDRIVER, "goog", "chrome")
-#     with Remote(sbr_connection, options=ChromeOptions()) as driver:
-#         driver.get(website)
-#         print("Waiting captcha to solve...")
-#         solve_res = driver.execute(
-#             "executeCdpCommand",
-#             {
-#                 "cmd": "Captcha.waitForSolve",
-#                 "params": {"detectTimeout": 10000},
-#             },
-#         )
-#         print("Captcha solve status:", solve_res["value"]["status"])
-#         print("Navigated! Scraping page content...")
-#         time.sleep(3)
-#         html = driver.page_source
-#         return html
-
-
-# def scrape_website(website):
-#     print(f"🌐 Scraping TikTok using logged-in session: {website}")
-
-#     chrome_options = Options()
-#     chrome_options.add_argument("start-maximized")
-#     driver = webdriver.Chrome(options=chrome_options)
-
-#     # Load cookies from file
-#     cookies_path = os.path.join(base_dir, "utils", "cookies_cafe.txt")
-#     driver.get("https://www.tiktok.com")  # Preload domain for cookies
-
-#     with open(cookies_path, "r", encoding="utf-8") as f:
-#         for line in f:
-#             if not line.strip().startswith("#") and line.strip():
-#                 parts = line.strip().split("\t")
-#                 if len(parts) == 7:
-#                     domain, flag, path, secure, expiry, name, value = parts
-#                     cookie_dict = {
-#                         "domain": domain,
-#                         "name": name,
-#                         "value": value,
-#                         "path": path,
-#                         "secure": secure.lower() == "true",
-#                     }
-#                     try:
-#                         driver.add_cookie(cookie_dict)
-#                     except Exception as e:
-#                         print(f"⚠️ Cookie error: {name} → {e}")
-
-#     # Now visit the page as logged-in user
-#     driver.get(website)
-#     time.sleep(10)
-
-#     # Scroll for more content
-#     for _ in range(3):
-#         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-#         time.sleep(4)
-
-#     html = driver.page_source
-#     driver.quit()
-#     print("✅ Content scraped with cookies.")
-#     return html
-
-
 def scrape_website(website):
     print(f"🌐 Scraping TikTok using logged-in session: {website}")
 
@@ -211,36 +147,6 @@ def extract_video_data(driver, video_url, timestamp):
         "comments": comments
     }
 
-# def get_video_urls(username_url, timestamp):
-#     html = scrape_website(username_url)
-#     soup = BeautifulSoup(html, "html.parser")
-
-#     # parsed soup
-#     username = username_url.rstrip('/').split('@')[-1]
-#     #global timestamp 
-
-#     video_tags = soup.find_all("a", href=True)
-#     video_urls = []
-#     for tag in video_tags:
-#         href = tag["href"]
-#         if "/video/" in href:
-#             video_url = urljoin("https://www.tiktok.com", href)
-#             video_urls.append(video_url)
-    
-#     list_urls = list(set(video_urls))
-#     #save
-#     # save_to_file(html, f"{username}_html_{timestamp}.txt")
-#     # save_to_file(str(soup), f"{username}_soup_{timestamp}.txt")
-#     # save_to_file(str(list_urls), f"{username}_list_urls_{timestamp}.txt")
-#     save_to_file(html, f"{username}_html_{timestamp}.txt", base_dir, relative_path= "data/text")
-#     save_to_file(str(soup), f"{username}_soup_{timestamp}.txt", base_dir, relative_path= "data/text")
-#     save_to_file(str(list_urls), f"{username}_urls_{timestamp}.txt", base_dir, relative_path= "data/text")
-
-#     print(f"URL dowloaded : {list_urls}")
-
-#     return list_urls, username
-
-
 def get_video_urls(username_url, timestamp):
     html = scrape_website(username_url)
     soup = BeautifulSoup(html, "html.parser")
@@ -264,49 +170,13 @@ def get_video_urls(username_url, timestamp):
     print(f"URL downloaded: {list_urls}")
     return list_urls, username
 
-# def build_username_data(username_url, timestamp):
-#     sleep_between=10
-
-#     #global timestamp
-
-#     video_urls, username = get_video_urls(username_url,timestamp)
-#     #video_urls = video_urls[:max_videos]  # Limit for testing
-
-#     print("Starting full video scraping...")
-
-#     user_data = {}
-
-#     for video_url in video_urls:
-#         for attempt in range(2):  # Retry up to 2 times
-#             try:
-#                 # Create a new browser session for each video
-#                 sbr_connection = ChromiumRemoteConnection(SBR_WEBDRIVER, "goog", "chrome")
-#                 with Remote(sbr_connection, options=ChromeOptions()) as driver:
-#                     video_data = extract_video_data(driver, video_url,timestamp)
-#                     user_data[video_url] = video_data
-#                 break  # Exit retry loop on success
-#             except Exception as e:
-#                 print(f"Attempt {attempt+1} failed for {video_url}: {e}")
-#                 time.sleep(5)  # Wait before retrying
-
-#         time.sleep(sleep_between)  # Throttle between videos
-
-#     username_data = {
-#         username_url: user_data
-#     }
-    
-#     #save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt")
-
-#     save_to_file(str(username_data), f"{username}_{timestamp}.txt", base_dir, relative_path= "data/text")
-
-#     return username_data
-
-
-
 def build_username_data(username_url, timestamp):
-    sleep_between = 10
+    sleep_between=10
 
-    video_urls, username = get_video_urls(username_url, timestamp)
+    #global timestamp
+
+    video_urls, username = get_video_urls(username_url,timestamp)
+    #video_urls = video_urls[:max_videos]  # Limit for testing
 
     print("Starting full video scraping...")
 
@@ -317,39 +187,30 @@ def build_username_data(username_url, timestamp):
     for video_url in video_urls:
         for attempt in range(2):  # Retry up to 2 times
             try:
-                chrome_options = Options()
-                chrome_options.add_argument("--headless=new")
-                chrome_options.add_argument("--disable-gpu")
-                chrome_options.add_argument("--no-sandbox")
-                chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-                chrome_options.add_argument("start-maximized")
-                chrome_options.add_argument(
-                    "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/120.0.0.0 Safari/537.36"
-                )
-
-                driver = webdriver.Chrome(options=chrome_options)
-
-                try:
-                    video_data = extract_video_data(driver, video_url, timestamp)
+                # Create a new browser session for each video
+                sbr_connection = ChromiumRemoteConnection(SBR_WEBDRIVER, "goog", "chrome")
+                with Remote(sbr_connection, options=ChromeOptions()) as driver:
+                    video_data = extract_video_data(driver, video_url,timestamp)
                     user_data[video_url] = video_data
-                    break  # success
-                finally:
-                    driver.quit()
+                break  # Exit retry loop on success
             except Exception as e:
                 print(f"Attempt {attempt+1} failed for {video_url}: {e}")
-                time.sleep(5)
+                time.sleep(5)  # Wait before retrying
 
-        time.sleep(sleep_between)
+        time.sleep(sleep_between)  # Throttle between videos
 
     username_data = {
         username_url: user_data
     }
+    
+    #save_to_file(str(username_data), f"{username}_username_data_{timestamp}.txt")
 
-    save_to_file(str(username_data), f"{username}_{timestamp}.txt", base_dir, relative_path="data/text")
+    save_to_file(str(username_data), f"{username}_{timestamp}.txt", base_dir, relative_path= "data/text")
 
     return username_data
+
+
+
 
 
 
