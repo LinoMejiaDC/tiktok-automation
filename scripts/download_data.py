@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from scripts.download_video import download_tiktok_video
+from scripts.dir_url import url_filter
 from dotenv import load_dotenv
 
 from selenium import webdriver
@@ -182,7 +183,7 @@ def build_username_data(username_url, timestamp):
 
     user_data = {}
 
-    video_urls = video_urls[:2]
+    video_urls = url_filter(video_urls)
 
     for video_url in video_urls:
         for attempt in range(2):  # Retry up to 2 times
