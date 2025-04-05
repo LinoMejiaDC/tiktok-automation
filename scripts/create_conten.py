@@ -1,19 +1,7 @@
-# import json
-# from openai import OpenAI
-# from dotenv import load_dotenv
-# import os
-
-# # Create OpenAI client
-# client = OpenAI()
-
-# # ✅ Load environment variables
-# load_dotenv()
-# openai.api_key = os.getenv("OPENAI_API_KEY")
-
-import json
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+import ast
 
 # ✅ Load environment variables first
 load_dotenv()
@@ -22,32 +10,31 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-# ✅ Step 1: Load original TikTok video description
-def load_description_from_file(filepath):
-    with open(filepath, "r", encoding="utf-8") as f:
-        raw = f.read()
-        try:
-            data = eval(raw)  # Your file is a Python dict, not strict JSON
-        except Exception as e:
-            raise ValueError("Failed to parse file. Check format.") from e
-
-        first_url_data = list(data.values())[0]  # get the video dictionary
-        first_video_data = list(first_url_data.values())[0]  # get the first video details
-        return first_video_data["description"]
-
-# ✅ Step 2: Use GPT-4 Turbo to paraphrase
-
 def paraphrase_text(original_text):
+
+
+#     prompt = f"""
+
+# Você é um criador de conteúdo viral no TikTok que mora no Brasil.
+
+# Melhore e reformule a legenda abaixo para torná-la mais impactante, envolvente e viral. Mantenha as hashtags e deixe-a pronta para o TikTok.
+
+#  legenda Original: {original_text}
+
+# Reformulada:
+# """
+
     prompt = f"""
+    Você é um criador de conteúdo viral no TikTok que mora no Brasil.
 
-Você é um criador de conteúdo viral no TikTok que mora no Brasil.
+    Reescreva APENAS a legenda abaixo de forma mais impactante, envolvente e viral. Mantenha as hashtags. NÃO explique, não adicione nada além da legenda reformulada.
 
-Melhore e reformule a legenda abaixo para torná-la mais impactante, envolvente e viral. Mantenha as hashtags e deixe-a pronta para o TikTok.
+    Legenda original:
+    {original_text}
 
-Original: {original_text}
+    Legenda reformulada:
+    """
 
-Reformulada:
-"""
     response = client.chat.completions.create(
         model="gpt-4-turbo",
         messages=[
@@ -58,16 +45,36 @@ Reformulada:
 
     return response.choices[0].message.content.strip()
 
+def create_aicontent(data):
+   description_ai= {}
 
+   for user_url, videos_dict in data.items():
+    
+    print(f"videos_dict >>> {videos_dict}")
+    # Loop through the videos inside
+    for video_url, video_info in videos_dict.items():
+        video_id = video_url.split('/')[-1]
+        description = video_info.get('description', '')
+        print(f"🔢 Video ID: {video_id}")
+        print(f"📝 Description: {description}")
+
+        text_ai =  paraphrase_text(description)
+
+        description_ai[video_id] = text_ai
+        
+        print(f"description_ai --->> {description_ai}")
+    
+    return description_ai
+    
 # ✅ Step 3: Run the process
 if __name__ == "__main__":
-    filepath = "/home/linoccm/08-tiktok-automation/data/text/choquei_username_data_202503301619.txt"
+    filepath = "/home/linoccm/08-tiktok-automation/data/text/choquei_2025040423.txt" 
 
-    print("📥 Loading original TikTok description...")
-    original = load_description_from_file(filepath)
-    print("📄 Original:\n", original)
-
-    print("\n✨ Generating paraphrased version using GPT-4 Turbo...")
-    improved = paraphrase_text(original)
-
-    print("\n🔥 Paraphrased:\n", improved)
+    with open(filepath, "r", encoding="utf-8") as f:
+        raw = f.read()
+        try:
+            data = ast.literal_eval(raw)  # safely convert str to dict
+        except Exception as e:
+            raise ValueError("❌ Failed to parse file as dict. Check content.") from e
+    
+    create_aicontent(data)

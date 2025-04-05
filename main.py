@@ -1,8 +1,10 @@
 
 from scripts.download_data import build_username_data
-from scripts.create_conten import load_description_from_file, paraphrase_text
+#from scripts.create_conten import load_description_from_file, paraphrase_text
 from scripts.download_video import download_tiktok_video
 from scripts.dir_url import url_filter
+from scripts.create_conten import create_aicontent
+from scripts.upload_video import upload_video
 
 from datetime import datetime
 import os
@@ -14,11 +16,11 @@ base_dir = "/home/linoccm/08-tiktok-automation"
 if __name__ == "__main__":
 
     # 1- Scrapping data 
-    username_url = "https://www.tiktok.com/@sbt"  
+
+    #username_url = "https://www.tiktok.com/@sbt"  
     #username_url = "https://www.tiktok.com/@jovempannews"  
-    #username_url = "https://www.tiktok.com/@choquei"
-
-
+    username_url = "https://www.tiktok.com/@choquei"
+    #username_url = "https://www.tiktok.com/@portadosfundos"
     username = username_url.rstrip('/').split('@')[-1]
     timestamp = datetime.now().strftime("%Y%m%d%H")
 
@@ -27,31 +29,10 @@ if __name__ == "__main__":
     from pprint import pprint
     pprint(data)
 
-    # 2 dowload video
-    # num_videos = 2    
-
-    # try:
-    #     path_urls = base_dir + f"/data/text/{username}_urls_{timestamp}.txt"
-
-    #     with open(path_urls, "r", encoding="utf-8") as file:
-    #         video_urls = file.read()
-    #         print(video_urls)
-    # except FileNotFoundError:
-    #     print(f"ERROR The file at {path_urls} was not found.")
-
-    # video_urls = video_urls[:num_videos]
-
+    # 2 download video 
     print(f"############ starting download video ############")
 
-
     file_path = os.path.join(base_dir, "data", "text",f"{username}_urls_{timestamp}.txt")
-
-    # try: 
-    #     with open(file_path, "r", encoding="utf-8") as f:
-    #         urls = f.read()
-
-    # except Exception as e:
-    #     print("❌ Failed to parse URLs:", e)
 
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -59,15 +40,8 @@ if __name__ == "__main__":
     except Exception as e:
         print("❌ Failed to parse URLs:", e)
         urls = []  # fallback to empty list
-
-
-    print(f"file_path  --- {file_path }")
     
-    urls_filter = url_filter(urls)
-
-    print(f"file_path  --- {file_path }")
-    
-    print(f"urls_filter --- {urls_filter}")
+    urls_filter = url_filter(urls, 1, 3)
 
     for url in urls_filter:
 
@@ -75,18 +49,16 @@ if __name__ == "__main__":
         download_tiktok_video(url, path_save_videos)
 
 
-    #2 - create content
+    #3 - create content
 
-    # output_dir = os.path.join(base_dir, "data", "videos")
+    print(f"############ starting create content AI  ############")
 
-    # filepath = "/home/linoccm/08-tiktok-automation/data/text/choquei_username_data_202503301619.txt"
-    # print("📥 Loading original TikTok description...")
-    # original = load_description_from_file(filepath)
-    # print("📄 Original:\n", original)
+    descriptionai = create_aicontent(data)
 
-    # print("\n✨ Generating paraphrased version using GPT-4 Turbo...")
-    # improved = paraphrase_text(original)
+    #4 upload video 
 
-    # print("\n🔥 Paraphrased:\n", improved)
+    for url_video, description in descriptionai.items():
+        VIDEO_PATH = base_dir + "/data/videos/" + f"{username}_{url_video}.mp4"
+        upload_video(VIDEO_PATH, description)
 
 

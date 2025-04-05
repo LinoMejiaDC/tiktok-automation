@@ -148,28 +148,55 @@ def extract_video_data(driver, video_url, timestamp):
         "comments": comments
     }
 
+# def get_video_urls(username_url, timestamp):
+#     html = scrape_website(username_url)
+#     soup = BeautifulSoup(html, "html.parser")
+#     username = username_url.rstrip('/').split('@')[-1]
+
+#     video_tags = soup.find_all("a", href=True)
+#     video_urls = []
+
+#     for tag in video_tags:
+#         href = tag["href"]
+#         if "/video/" in href:
+#             print("🎯 Found video href:", href)  # Debug print
+#             video_url = urljoin("https://www.tiktok.com", href)
+#             video_urls.append(video_url)
+
+#     list_urls = list(set(video_urls))
+#     save_to_file(html, f"{username}_html_{timestamp}.txt", base_dir, relative_path="data/text")
+#     save_to_file(str(soup), f"{username}_soup_{timestamp}.txt", base_dir, relative_path="data/text")
+#     save_to_file(str(list_urls), f"{username}_urls_{timestamp}.txt", base_dir, relative_path="data/text")
+
+#     print(f"URL downloaded: {list_urls}")
+#     return list_urls, username
+
+
 def get_video_urls(username_url, timestamp):
     html = scrape_website(username_url)
     soup = BeautifulSoup(html, "html.parser")
     username = username_url.rstrip('/').split('@')[-1]
 
-    video_tags = soup.find_all("a", href=True)
+    seen = set()
     video_urls = []
 
+    video_tags = soup.find_all("a", href=True)
     for tag in video_tags:
         href = tag["href"]
         if "/video/" in href:
-            print("🎯 Found video href:", href)  # Debug print
             video_url = urljoin("https://www.tiktok.com", href)
-            video_urls.append(video_url)
+            if video_url not in seen:
+                seen.add(video_url)
+                video_urls.append(video_url)
+            if len(video_urls) == 10:
+                break
 
-    list_urls = list(set(video_urls))
     save_to_file(html, f"{username}_html_{timestamp}.txt", base_dir, relative_path="data/text")
     save_to_file(str(soup), f"{username}_soup_{timestamp}.txt", base_dir, relative_path="data/text")
-    save_to_file(str(list_urls), f"{username}_urls_{timestamp}.txt", base_dir, relative_path="data/text")
+    save_to_file(str(video_urls), f"{username}_urls_{timestamp}.txt", base_dir, relative_path="data/text")
 
-    print(f"URL downloaded: {list_urls}")
-    return list_urls, username
+    print(f"✅ Downloaded {len(video_urls)} URLs: {video_urls}")
+    return video_urls, username
 
 def build_username_data(username_url, timestamp):
     sleep_between=10
@@ -183,7 +210,7 @@ def build_username_data(username_url, timestamp):
 
     user_data = {}
 
-    video_urls = url_filter(video_urls)
+    video_urls = url_filter(video_urls, 1,3)
 
     for video_url in video_urls:
         for attempt in range(2):  # Retry up to 2 times
